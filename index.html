@@ -1,472 +1,517 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Olymp Project | SAMP RolePlay</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    /* --- Базовые настройки --- */
-    :root {
-      --yellow: #fdc830;
-      --orange: #f37335;
-      --bg-dark: #050505;
-      --text-main: #e5e7eb;
-      --text-muted: #9ca3af;
-      --border-color: rgba(255, 255, 255, 0.06);
-      --panel-bg: #0c0c0e;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Olymp Project | SAMP RolePlay</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* --- Максимально тёмный фон --- */
+        :root {
+            --yellow: #fdc830;
+            --orange: #f37335;
+            --bg-dark: #010101;
+            --panel-bg: #0a0a0c;
+            --text-main: #e5e7eb;
+            --text-muted: #9ca3af;
+            --border-color: rgba(255, 255, 255, 0.05);
+        }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: #020202;
-      background-image: radial-gradient(circle at 50% 0%, #141414 0%, #020202 90%);
-      color: var(--text-main);
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      overflow-x: hidden;
-    }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #010101;
+            background-image: radial-gradient(circle at 50% 0%, #0a0a0a 0%, #010101 90%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
 
-    /* --- Главный контейнер --- */
-    .app-container {
-      background: transparent;
-      max-width: 1100px;
-      width: 100%;
-      padding: 20px 30px;
-      position: relative;
-      display: flex;
-      gap: 30px;
-      align-items: flex-start;
-      justify-content: center;
-    }
+        /* --- Контейнер с флексом для трёх колонок --- */
+        .app-container {
+            max-width: 1200px;
+            width: 100%;
+            padding: 20px 15px;
+            display: flex;
+            gap: 25px;
+            align-items: flex-start;
+            justify-content: center;
+        }
 
-    /* --- Центральный блок (главная страница) --- */
-    .main-content {
-      flex: 0 1 600px;
-      min-width: 300px;
-      padding: 10px 0;
-    }
+        /* --- Боковые панели (плавно выезжают) --- */
+        .side-panel {
+            flex: 0 0 220px;
+            background: var(--panel-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 22px 18px;
+            position: sticky;
+            top: 20px;
+            max-height: calc(100vh - 80px);
+            overflow-y: auto;
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+            opacity: 0;
+        }
 
-    /* --- Боковые панели (квадраты по краям) --- */
-    .side-panel {
-      flex: 0 0 240px;
-      background: var(--panel-bg);
-      border: 1px solid var(--border-color);
-      border-radius: 20px;
-      padding: 24px 20px;
-      position: sticky;
-      top: 20px;
-      max-height: calc(100vh - 80px);
-      overflow-y: auto;
-      transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-      opacity: 0;
-      transform: translateX(0);
-    }
+        .side-panel::-webkit-scrollbar { width: 3px; }
+        .side-panel::-webkit-scrollbar-track { background: transparent; }
+        .side-panel::-webkit-scrollbar-thumb { background: var(--orange); border-radius: 4px; }
 
-    .side-panel::-webkit-scrollbar { width: 3px; }
-    .side-panel::-webkit-scrollbar-track { background: transparent; }
-    .side-panel::-webkit-scrollbar-thumb { background: var(--orange); border-radius: 4px; }
+        /* Левая панель — выезжает слева */
+        .side-panel-left {
+            transform: translateX(-50px);
+        }
+        .side-panel-left.open {
+            opacity: 1;
+            transform: translateX(0);
+        }
 
-    /* Левая панель — выезжает слева */
-    .side-panel-left {
-      transform: translateX(-40px);
-    }
-    .side-panel-left.open {
-      opacity: 1;
-      transform: translateX(0);
-    }
+        /* Правая панель — выезжает справа */
+        .side-panel-right {
+            transform: translateX(50px);
+        }
+        .side-panel-right.open {
+            opacity: 1;
+            transform: translateX(0);
+        }
 
-    /* Правая панель — выезжает справа */
-    .side-panel-right {
-      transform: translateX(40px);
-    }
-    .side-panel-right.open {
-      opacity: 1;
-      transform: translateX(0);
-    }
+        /* --- Контент панелей --- */
+        .panel-content h3 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+            letter-spacing: 0.3px;
+            background: linear-gradient(to right, var(--yellow), var(--orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
 
-    /* Контент внутри панелей */
-    .panel-content h3 {
-      font-size: 1rem;
-      font-weight: 700;
-      color: #fff;
-      margin-bottom: 12px;
-      letter-spacing: 0.3px;
-      background: linear-gradient(to right, var(--yellow), var(--orange));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
+        .panel-content p {
+            color: #b0b5c0;
+            line-height: 1.6;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+        }
 
-    .panel-content p {
-      color: #b0b5c0;
-      line-height: 1.6;
-      font-size: 0.8rem;
-      margin-bottom: 10px;
-    }
+        .panel-content .value-list {
+            list-style: none;
+            color: #b0b5c0;
+            font-size: 0.8rem;
+            line-height: 2;
+        }
+        .panel-content .value-list li {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .panel-content .value-list li::before {
+            content: "◆";
+            color: var(--yellow);
+            font-size: 0.6rem;
+        }
 
-    .panel-content .value-list {
-      list-style: none;
-      color: #b0b5c0;
-      font-size: 0.8rem;
-      line-height: 2;
-    }
-    .panel-content .value-list li {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .panel-content .value-list li::before {
-      content: "◆";
-      color: var(--yellow);
-      font-size: 0.7rem;
-    }
+        .panel-content .partner-box {
+            text-align: center;
+        }
+        .panel-content .partner-box .emoji-big {
+            font-size: 2.2rem;
+            display: block;
+            margin-bottom: 4px;
+        }
+        .panel-content .partner-box p {
+            font-size: 0.8rem;
+        }
+        .panel-content .partner-box .link {
+            color: var(--yellow);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.8rem;
+            display: inline-block;
+            margin-top: 6px;
+            transition: color 0.3s;
+        }
+        .panel-content .partner-box .link:hover {
+            color: #fff;
+        }
 
-    .panel-content .partner-box {
-      text-align: center;
-    }
-    .panel-content .partner-box .emoji-big {
-      font-size: 2.4rem;
-      display: block;
-      margin-bottom: 4px;
-    }
-    .panel-content .partner-box p {
-      font-size: 0.8rem;
-    }
-    .panel-content .partner-box .link {
-      color: var(--yellow);
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 0.8rem;
-      display: inline-block;
-      margin-top: 6px;
-      transition: color 0.3s;
-    }
-    .panel-content .partner-box .link:hover {
-      color: #fff;
-    }
+        /* --- Центральный блок (главная) --- */
+        .main-content {
+            flex: 0 1 580px;
+            min-width: 280px;
+            padding: 10px 0;
+        }
 
-    /* --- Контент Главной --- */
-    .logo-wrapper {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-bottom: 10px;
-    }
+        /* --- Контент Главной --- */
+        .logo-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 10px;
+        }
 
-    .css-icon {
-      position: relative;
-      width: 70px;
-      height: 70px;
-    }
+        .css-icon {
+            position: relative;
+            width: 70px;
+            height: 70px;
+        }
 
-    .swirl-1 {
-      position: absolute;
-      width: 70px; height: 70px; top: 0; left: 0;
-      background: conic-gradient(from 45deg, var(--yellow), var(--orange), transparent 70%);
-      -webkit-mask: radial-gradient(circle at 50% 50%, transparent 22px, black 23px);
-      mask: radial-gradient(circle at 50% 50%, transparent 22px, black 23px);
-    }
+        .swirl-1 {
+            position: absolute;
+            width: 70px;
+            height: 70px;
+            top: 0;
+            left: 0;
+            background: conic-gradient(from 45deg, var(--yellow), var(--orange), transparent 70%);
+            -webkit-mask: radial-gradient(circle at 50% 50%, transparent 22px, black 23px);
+            mask: radial-gradient(circle at 50% 50%, transparent 22px, black 23px);
+        }
 
-    .swirl-2 {
-      position: absolute;
-      width: 46px; height: 46px; top: 12px; left: 12px;
-      background: conic-gradient(from 225deg, var(--yellow), var(--orange), transparent 70%);
-      -webkit-mask: radial-gradient(circle at 50% 50%, transparent 12px, black 13px);
-      mask: radial-gradient(circle at 50% 50%, transparent 12px, black 13px);
-      transform: rotate(45deg) scaleX(-1);
-      box-shadow: 0 0 16px rgba(243, 115, 53, 0.1);
-    }
+        .swirl-2 {
+            position: absolute;
+            width: 46px;
+            height: 46px;
+            top: 12px;
+            left: 12px;
+            background: conic-gradient(from 225deg, var(--yellow), var(--orange), transparent 70%);
+            -webkit-mask: radial-gradient(circle at 50% 50%, transparent 12px, black 13px);
+            mask: radial-gradient(circle at 50% 50%, transparent 12px, black 13px);
+            transform: rotate(45deg) scaleX(-1);
+            box-shadow: 0 0 16px rgba(243, 115, 53, 0.08);
+        }
 
-    .logo-text {
-      margin-top: 4px;
-      font-weight: 700;
-      font-size: 1.2rem;
-      letter-spacing: 3px;
-      text-transform: uppercase;
-      color: #8892b0;
-    }
-    .logo-text span {
-      font-weight: 300;
-      display: block;
-      font-size: 0.7rem;
-      letter-spacing: 5px;
-      color: #6b7280;
-      margin-top: -4px;
-    }
+        .logo-text {
+            margin-top: 4px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #8892b0;
+        }
+        .logo-text span {
+            font-weight: 300;
+            display: block;
+            font-size: 0.7rem;
+            letter-spacing: 5px;
+            color: #6b7280;
+            margin-top: -4px;
+        }
 
-    .hero-title {
-      font-size: 2rem;
-      font-weight: 800;
-      text-align: center;
-      margin-bottom: 2px;
-      background: linear-gradient(to right, var(--yellow), var(--orange));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      letter-spacing: -0.5px;
-    }
+        .hero-title {
+            font-size: 2rem;
+            font-weight: 800;
+            text-align: center;
+            margin-bottom: 2px;
+            background: linear-gradient(to right, var(--yellow), var(--orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -0.5px;
+        }
 
-    .hero-subtitle {
-      text-align: center;
-      color: var(--text-muted);
-      font-size: 0.7rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      margin-bottom: 12px;
-      opacity: 0.6;
-    }
+        .hero-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
 
-    .text-block {
-      background: rgba(255, 255, 255, 0.02);
-      padding: 14px 18px;
-      border-radius: 14px;
-      border-left: 3px solid var(--orange);
-      line-height: 1.6;
-      color: #c5c9d0;
-      margin-bottom: 14px;
-      font-size: 0.85rem;
-    }
-    .text-block strong { color: #fff; }
+        .text-block {
+            background: rgba(255, 255, 255, 0.02);
+            padding: 14px 18px;
+            border-radius: 14px;
+            border-left: 3px solid var(--orange);
+            line-height: 1.6;
+            color: #c5c9d0;
+            margin-bottom: 14px;
+            font-size: 0.85rem;
+        }
+        .text-block strong {
+            color: #fff;
+        }
 
-    .features-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-bottom: 14px;
-    }
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin-bottom: 14px;
+        }
 
-    .feature-card {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid var(--border-color);
-      padding: 12px 8px;
-      border-radius: 12px;
-      text-align: center;
-      transition: 0.3s;
-    }
-    .feature-card:hover { border-color: rgba(253, 200, 48, 0.15); }
-    .feature-card h4 { color: #fff; font-size: 0.85rem; margin-bottom: 0; }
-    .feature-card p { font-size: 0.7rem; color: var(--text-muted); }
-    .feature-icon { font-size: 1.2rem; display: block; margin-bottom: 2px; }
+        .feature-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            padding: 12px 8px;
+            border-radius: 12px;
+            text-align: center;
+            transition: 0.3s;
+        }
+        .feature-card:hover {
+            border-color: rgba(253, 200, 48, 0.12);
+        }
+        .feature-card h4 {
+            color: #fff;
+            font-size: 0.85rem;
+            margin-bottom: 0;
+        }
+        .feature-card p {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+        .feature-icon {
+            font-size: 1.2rem;
+            display: block;
+            margin-bottom: 2px;
+        }
 
-    /* Кнопка */
-    .cta-wrapper {
-      display: flex;
-      justify-content: center;
-      margin-top: 4px;
-    }
+        /* Кнопка */
+        .cta-wrapper {
+            display: flex;
+            justify-content: center;
+            margin-top: 4px;
+        }
 
-    .btn-play {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      padding: 12px 32px;
-      background: linear-gradient(135deg, var(--yellow), var(--orange));
-      color: #0b0c0e;
-      font-weight: 800;
-      font-size: 0.95rem;
-      text-decoration: none;
-      border-radius: 60px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      transition: all 0.3s ease;
-      box-shadow: 0 0 20px rgba(243, 115, 53, 0.1);
-      border: none;
-      cursor: pointer;
-    }
+        .btn-play {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 32px;
+            background: linear-gradient(135deg, var(--yellow), var(--orange));
+            color: #0b0c0e;
+            font-weight: 800;
+            font-size: 0.95rem;
+            text-decoration: none;
+            border-radius: 60px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(243, 115, 53, 0.08);
+            border: none;
+            cursor: pointer;
+        }
 
-    .btn-play svg {
-      width: 16px;
-      height: 16px;
-      fill: #0b0c0e;
-      transition: transform 0.3s ease;
-    }
+        .btn-play svg {
+            width: 16px;
+            height: 16px;
+            fill: #0b0c0e;
+            transition: transform 0.3s ease;
+        }
 
-    .btn-play:hover {
-      transform: scale(1.04);
-      box-shadow: 0 0 30px rgba(243, 115, 53, 0.2);
-    }
-    .btn-play:hover svg {
-      transform: translateX(3px) scale(1.1);
-    }
-    .btn-play:active { transform: scale(0.95); }
+        .btn-play:hover {
+            transform: scale(1.04);
+            box-shadow: 0 0 30px rgba(243, 115, 53, 0.15);
+        }
+        .btn-play:hover svg {
+            transform: translateX(3px) scale(1.1);
+        }
+        .btn-play:active {
+            transform: scale(0.95);
+        }
 
-    /* Футер */
-    .footer {
-      margin-top: 14px;
-      padding-top: 12px;
-      border-top: 1px solid var(--border-color);
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.7rem;
-      color: var(--text-muted);
-      flex-wrap: wrap;
-      gap: 8px;
-      opacity: 0.4;
-    }
+        /* Футер */
+        .footer {
+            margin-top: 14px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            flex-wrap: wrap;
+            gap: 8px;
+            opacity: 0.35;
+        }
 
-    /* --- Адаптивность --- */
-    @media (max-width: 1024px) {
-      .app-container {
-        flex-direction: column;
-        align-items: center;
-        gap: 20px;
-      }
-      .side-panel {
-        flex: 1 1 auto;
-        width: 100%;
-        max-width: 600px;
-        position: static;
-        max-height: none;
-        transform: translateX(0) !important;
-        opacity: 1 !important;
-        padding: 18px 20px;
-      }
-      .side-panel-left,
-      .side-panel-right {
-        transform: translateX(0) !important;
-        opacity: 1 !important;
-      }
-      .main-content {
-        flex: 1 1 auto;
-        width: 100%;
-        max-width: 600px;
-      }
-    }
+        /* --- Адаптивность --- */
+        @media (max-width: 1024px) {
+            .app-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+            .side-panel {
+                flex: 1 1 auto;
+                width: 100%;
+                max-width: 580px;
+                position: static;
+                max-height: none;
+                transform: translateX(0) !important;
+                opacity: 1 !important;
+                padding: 18px 20px;
+            }
+            .main-content {
+                flex: 1 1 auto;
+                width: 100%;
+                max-width: 580px;
+            }
+            .side-panel-left,
+            .side-panel-right {
+                transform: translateX(0) !important;
+                opacity: 1 !important;
+            }
+        }
 
-    @media (max-width: 600px) {
-      .app-container { padding: 10px; }
-      .features-grid { grid-template-columns: 1fr; }
-      .hero-title { font-size: 1.6rem; }
-      .btn-play { width: 100%; justify-content: center; }
-      .side-panel { padding: 14px 16px; }
-    }
-  </style>
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            .app-container {
+                padding: 10px;
+                gap: 16px;
+            }
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero-title {
+                font-size: 1.6rem;
+            }
+            .btn-play {
+                width: 100%;
+                justify-content: center;
+                padding: 14px 16px;
+            }
+            .side-panel {
+                padding: 14px 16px;
+            }
+            .main-content {
+                padding: 0;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .hero-title {
+                font-size: 1.3rem;
+            }
+            .text-block {
+                font-size: 0.8rem;
+                padding: 12px 14px;
+            }
+            .feature-card h4 {
+                font-size: 0.8rem;
+            }
+        }
+    </style>
 </head>
 <body>
 
-  <div class="app-container">
+    <div class="app-container">
 
-    <!-- ЛЕВАЯ ПАНЕЛЬ: О проекте -->
-    <div class="side-panel side-panel-left open" id="panelAbout">
-      <div class="panel-content">
-        <h3>📖 О проекте</h3>
-        <p><strong>«Olymp Project»</strong> – новый взгляд на SAMP RolePlay. Лучшие механики, продуманная экономика и уникальная атмосфера.</p>
-        <p>Ценим творческий подход, без токсичности. Ты решаешь, кем быть.</p>
-        <ul class="value-list">
-          <li>Уважение к игрокам</li>
-          <li>Без перекоса доната</li>
-          <li>Ивенты каждый месяц</li>
-          <li>Честная администрация</li>
-        </ul>
-      </div>
+        <!-- ЛЕВАЯ ПАНЕЛЬ: О проекте -->
+        <div class="side-panel side-panel-left" id="panelAbout">
+            <div class="panel-content">
+                <h3>📖 О проекте</h3>
+                <p><strong>«Olymp Project»</strong> – новый взгляд на SAMP RolePlay. Лучшие механики, продуманная экономика и уникальная атмосфера.</p>
+                <p>Ценим творческий подход, без токсичности. Ты решаешь, кем быть.</p>
+                <ul class="value-list">
+                    <li>Уважение к игрокам</li>
+                    <li>Без перекоса доната</li>
+                    <li>Ивенты каждый месяц</li>
+                    <li>Честная администрация</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ЦЕНТРАЛЬНЫЙ БЛОК: Главная -->
+        <div class="main-content">
+
+            <div class="logo-wrapper">
+                <div class="css-icon">
+                    <div class="swirl-1"></div>
+                    <div class="swirl-2"></div>
+                </div>
+                <div class="logo-text">
+                    OLYMP
+                    <span>PROJECT</span>
+                </div>
+            </div>
+
+            <div class="hero-title">Твой мир в SAMP</div>
+            <div class="hero-subtitle">RolePlay без границ</div>
+
+            <div class="text-block">
+                <strong>RolePlay — это не просто игра, это жизнь, которую мы выбираем сами.</strong> Наш проект объединяет ценителей жанра, для которых важен каждый диалог, каждая деталь и каждая роль.
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <span class="feature-icon">⚔️</span>
+                    <h4>Твоя карьера</h4>
+                    <p>От новичка до легенды</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">⚡</span>
+                    <h4>Твои правила</h4>
+                    <p>Строй свой путь</p>
+                </div>
+                <div class="feature-card">
+                    <span class="feature-icon">📜</span>
+                    <h4>Твоя история</h4>
+                    <p>Каждый шаг меняет сюжет</p>
+                </div>
+            </div>
+
+            <div class="cta-wrapper">
+                <a href="#" class="btn-play">
+                    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                    Начать играть
+                </a>
+            </div>
+
+            <div class="footer">
+                <div>© 2026 <strong style="color: var(--yellow);">Olymp Project</strong></div>
+                <div>При поддержке <strong style="color: #fff;">RaidX</strong></div>
+            </div>
+
+        </div>
+
+        <!-- ПРАВАЯ ПАНЕЛЬ: Партнёр -->
+        <div class="side-panel side-panel-right" id="panelPartner">
+            <div class="panel-content">
+                <div class="partner-box">
+                    <span class="emoji-big">🚀</span>
+                    <h3 style="color: #fff; font-size: 1rem; margin-bottom: 6px;">Партнёр</h3>
+                    <p><strong style="color:#fff;">RaidX</strong> — Лига будущего. Мы перенимаем их стандарты качества и философию честной игры.</p>
+                    <a href="#" class="link">Узнать о RaidX →</a>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <!-- ЦЕНТРАЛЬНЫЙ БЛОК: Главная -->
-    <div class="main-content">
+    <!-- Скрипт для плавного выезжания панелей -->
+    <script>
+        window.addEventListener('load', function() {
+            const leftPanel = document.getElementById('panelAbout');
+            const rightPanel = document.getElementById('panelPartner');
 
-      <div class="logo-wrapper">
-        <div class="css-icon">
-          <div class="swirl-1"></div>
-          <div class="swirl-2"></div>
-        </div>
-        <div class="logo-text">
-          OLYMP
-          <span>PROJECT</span>
-        </div>
-      </div>
+            // Левая панель выезжает через 300ms
+            setTimeout(() => {
+                leftPanel.classList.add('open');
+            }, 300);
 
-      <div class="hero-title">Твой мир в SAMP</div>
-      <div class="hero-subtitle">RolePlay без границ</div>
-
-      <div class="text-block">
-        <strong>RolePlay — это не просто игра, это жизнь, которую мы выбираем сами.</strong> Наш проект объединяет ценителей жанра, для которых важен каждый диалог, каждая деталь и каждая роль.
-      </div>
-
-      <div class="features-grid">
-        <div class="feature-card">
-          <span class="feature-icon">⚔️</span>
-          <h4>Твоя карьера</h4>
-          <p>От новичка до легенды</p>
-        </div>
-        <div class="feature-card">
-          <span class="feature-icon">⚡</span>
-          <h4>Твои правила</h4>
-          <p>Строй свой путь</p>
-        </div>
-        <div class="feature-card">
-          <span class="feature-icon">📜</span>
-          <h4>Твоя история</h4>
-          <p>Каждый шаг меняет сюжет</p>
-        </div>
-      </div>
-
-      <div class="cta-wrapper">
-        <a href="#" class="btn-play">
-          <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-          Начать играть
-        </a>
-      </div>
-
-      <div class="footer">
-        <div>© 2026 <strong style="color: var(--yellow);">Olymp Project</strong></div>
-        <div>При поддержке <strong style="color: #fff;">RaidX</strong></div>
-      </div>
-
-    </div>
-
-    <!-- ПРАВАЯ ПАНЕЛЬ: Партнёр -->
-    <div class="side-panel side-panel-right open" id="panelPartner">
-      <div class="panel-content">
-        <div class="partner-box">
-          <span class="emoji-big">🚀</span>
-          <h3>Партнёр</h3>
-          <p><strong style="color:#fff;">RaidX</strong> — Лига будущего. Мы перенимаем их стандарты качества и философию честной игры.</p>
-          <a href="#" class="link">Узнать о RaidX →</a>
-        </div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- Скрипт для плавного появления панелей -->
-  <script>
-    // Панели уже имеют класс .open, они видны сразу.
-    // Но для плавности можно добавить небольшую задержку.
-    window.addEventListener('load', function() {
-      document.querySelectorAll('.side-panel').forEach((panel, index) => {
-        panel.style.transition = 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)';
-        // Небольшая задержка для левой и правой панели
-        if (index === 0) {
-          panel.style.transform = 'translateX(-30px)';
-          panel.style.opacity = '0';
-          setTimeout(() => {
-            panel.style.transform = 'translateX(0)';
-            panel.style.opacity = '1';
-          }, 200);
-        } else if (index === 1) {
-          panel.style.transform = 'translateX(30px)';
-          panel.style.opacity = '0';
-          setTimeout(() => {
-            panel.style.transform = 'translateX(0)';
-            panel.style.opacity = '1';
-          }, 400);
-        }
-      });
-    });
-  </script>
+            // Правая панель выезжает через 600ms
+            setTimeout(() => {
+                rightPanel.classList.add('open');
+            }, 600);
+        });
+    </script>
 
 </body>
 </html>
