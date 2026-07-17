@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* --- Максимально тёмный фон --- */
         :root {
             --yellow: #fdc830;
             --orange: #f37335;
@@ -38,20 +37,21 @@
             overflow-x: hidden;
         }
 
-        /* --- Контейнер с флексом для трёх колонок --- */
+        /* --- Главный контейнер — три колонки --- */
         .app-container {
-            max-width: 1200px;
+            max-width: 1300px;
             width: 100%;
-            padding: 20px 15px;
+            padding: 20px 10px;
             display: flex;
-            gap: 25px;
+            gap: 30px;
             align-items: flex-start;
             justify-content: center;
         }
 
-        /* --- Боковые панели (плавно выезжают) --- */
+        /* --- Боковые панели (фиксированная ширина) --- */
         .side-panel {
             flex: 0 0 220px;
+            min-width: 180px;
             background: var(--panel-bg);
             border: 1px solid var(--border-color);
             border-radius: 20px;
@@ -149,7 +149,8 @@
 
         /* --- Центральный блок (главная) --- */
         .main-content {
-            flex: 0 1 580px;
+            flex: 1 1 580px;
+            max-width: 620px;
             min-width: 280px;
             padding: 10px 0;
         }
@@ -170,10 +171,7 @@
 
         .swirl-1 {
             position: absolute;
-            width: 70px;
-            height: 70px;
-            top: 0;
-            left: 0;
+            width: 70px; height: 70px; top: 0; left: 0;
             background: conic-gradient(from 45deg, var(--yellow), var(--orange), transparent 70%);
             -webkit-mask: radial-gradient(circle at 50% 50%, transparent 22px, black 23px);
             mask: radial-gradient(circle at 50% 50%, transparent 22px, black 23px);
@@ -181,10 +179,7 @@
 
         .swirl-2 {
             position: absolute;
-            width: 46px;
-            height: 46px;
-            top: 12px;
-            left: 12px;
+            width: 46px; height: 46px; top: 12px; left: 12px;
             background: conic-gradient(from 225deg, var(--yellow), var(--orange), transparent 70%);
             -webkit-mask: radial-gradient(circle at 50% 50%, transparent 12px, black 13px);
             mask: radial-gradient(circle at 50% 50%, transparent 12px, black 13px);
@@ -241,9 +236,7 @@
             margin-bottom: 14px;
             font-size: 0.85rem;
         }
-        .text-block strong {
-            color: #fff;
-        }
+        .text-block strong { color: #fff; }
 
         .features-grid {
             display: grid;
@@ -260,25 +253,11 @@
             text-align: center;
             transition: 0.3s;
         }
-        .feature-card:hover {
-            border-color: rgba(253, 200, 48, 0.12);
-        }
-        .feature-card h4 {
-            color: #fff;
-            font-size: 0.85rem;
-            margin-bottom: 0;
-        }
-        .feature-card p {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-        }
-        .feature-icon {
-            font-size: 1.2rem;
-            display: block;
-            margin-bottom: 2px;
-        }
+        .feature-card:hover { border-color: rgba(253, 200, 48, 0.12); }
+        .feature-card h4 { color: #fff; font-size: 0.85rem; margin-bottom: 0; }
+        .feature-card p { font-size: 0.7rem; color: var(--text-muted); }
+        .feature-icon { font-size: 1.2rem; display: block; margin-bottom: 2px; }
 
-        /* Кнопка */
         .cta-wrapper {
             display: flex;
             justify-content: center;
@@ -319,11 +298,8 @@
         .btn-play:hover svg {
             transform: translateX(3px) scale(1.1);
         }
-        .btn-play:active {
-            transform: scale(0.95);
-        }
+        .btn-play:active { transform: scale(0.95); }
 
-        /* Футер */
         .footer {
             margin-top: 14px;
             padding-top: 12px;
@@ -337,32 +313,68 @@
             opacity: 0.35;
         }
 
-        /* --- Адаптивность --- */
+        /* --- Адаптивность: панели всегда по бокам --- */
         @media (max-width: 1024px) {
-            .app-container {
-                flex-direction: column;
-                align-items: center;
-                gap: 20px;
-            }
             .side-panel {
-                flex: 1 1 auto;
-                width: 100%;
-                max-width: 580px;
-                position: static;
-                max-height: none;
-                transform: translateX(0) !important;
-                opacity: 1 !important;
-                padding: 18px 20px;
+                flex: 0 0 170px;
+                min-width: 140px;
+                padding: 16px 14px;
+            }
+            .side-panel .panel-content p,
+            .side-panel .panel-content .value-list,
+            .side-panel .panel-content .partner-box p {
+                font-size: 0.7rem;
+            }
+            .side-panel .panel-content h3 {
+                font-size: 0.85rem;
+            }
+            .app-container {
+                gap: 15px;
+            }
+        }
+
+        @media (max-width: 820px) {
+            .side-panel {
+                flex: 0 0 130px;
+                min-width: 110px;
+                padding: 12px 10px;
+            }
+            .side-panel .panel-content p,
+            .side-panel .panel-content .value-list,
+            .side-panel .panel-content .partner-box p {
+                font-size: 0.6rem;
+                line-height: 1.4;
+                margin-bottom: 6px;
+            }
+            .side-panel .panel-content .value-list {
+                line-height: 1.6;
+            }
+            .side-panel .panel-content h3 {
+                font-size: 0.7rem;
+                margin-bottom: 6px;
+            }
+            .side-panel .panel-content .partner-box .emoji-big {
+                font-size: 1.6rem;
+            }
+            .side-panel .panel-content .partner-box .link {
+                font-size: 0.6rem;
+            }
+            .app-container {
+                gap: 10px;
+                padding: 10px 5px;
             }
             .main-content {
-                flex: 1 1 auto;
-                width: 100%;
-                max-width: 580px;
+                min-width: 200px;
             }
-            .side-panel-left,
-            .side-panel-right {
-                transform: translateX(0) !important;
-                opacity: 1 !important;
+            .hero-title {
+                font-size: 1.5rem;
+            }
+            .features-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .text-block {
+                font-size: 0.75rem;
+                padding: 12px 14px;
             }
         }
 
@@ -371,11 +383,31 @@
                 padding: 10px;
             }
             .app-container {
-                padding: 10px;
-                gap: 16px;
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 12px;
+                justify-content: center;
             }
-            .features-grid {
-                grid-template-columns: 1fr;
+            .side-panel {
+                flex: 1 1 100%;
+                max-width: 100%;
+                position: static;
+                max-height: none;
+                opacity: 1 !important;
+                transform: translateX(0) !important;
+                padding: 14px 16px;
+                margin: 0;
+            }
+            .side-panel-left,
+            .side-panel-right {
+                transform: translateX(0) !important;
+                opacity: 1 !important;
+            }
+            .main-content {
+                flex: 1 1 100%;
+                max-width: 100%;
+                padding: 0;
+                order: -1; /* главная сверху */
             }
             .hero-title {
                 font-size: 1.6rem;
@@ -385,11 +417,11 @@
                 justify-content: center;
                 padding: 14px 16px;
             }
-            .side-panel {
-                padding: 14px 16px;
+            .features-grid {
+                grid-template-columns: 1fr;
             }
-            .main-content {
-                padding: 0;
+            .footer {
+                font-size: 0.6rem;
             }
         }
 
@@ -398,8 +430,8 @@
                 font-size: 1.3rem;
             }
             .text-block {
-                font-size: 0.8rem;
-                padding: 12px 14px;
+                font-size: 0.75rem;
+                padding: 10px 12px;
             }
             .feature-card h4 {
                 font-size: 0.8rem;
@@ -495,18 +527,15 @@
 
     </div>
 
-    <!-- Скрипт для плавного выезжания панелей -->
     <script>
         window.addEventListener('load', function() {
             const leftPanel = document.getElementById('panelAbout');
             const rightPanel = document.getElementById('panelPartner');
 
-            // Левая панель выезжает через 300ms
             setTimeout(() => {
                 leftPanel.classList.add('open');
             }, 300);
 
-            // Правая панель выезжает через 600ms
             setTimeout(() => {
                 rightPanel.classList.add('open');
             }, 600);
